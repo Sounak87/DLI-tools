@@ -1,4 +1,2 @@
-# sanskritnlp-sh
-Open source shell scripts for Sanskrit Processing.
-
-This is part of a series of repositiories indexed here [https://sites.google.com/site/sanskritcode/]. Contributions welcome!
+Scripts for use with the Digital Library of India (DLI) website. 
+[https://sites.google.com/site/sanskritcode/]. Contributions welcome!
