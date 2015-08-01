@@ -45,11 +45,16 @@ if [ -f output.pdf ] ; then
   exit
 fi
 
+SERVER_1=www.dli.ernet.in
+SERVER_2=www.new.dli.ernet.in
+SERVER_3=www.new.dli.ernet.in
+SERVER_4=202.41.82.144
+
 if [ -f urls.txt ] ; then
   echo "*** dli-avaropa: urls.txt already exists; assuming this is from an incomplete download and continuing"
   else if [ -f allmetainfo.cgi ] ; then
     echo "*** dli-avaropa: allmetainfo.cgi already exists; assuming this is from an incomplete download and continuing"
-  else if ! (aria2c -c "http://www.dli.ernet.in/cgi-bin/DBscripts/allmetainfo.cgi?barcode=$1" ||  aria2c -c "http://202.41.82.144/cgi-bin/DBscripts/allmetainfo.cgi?barcode=$1" ); then
+  else if ! (aria2c -c "http://$SERVER_4/cgi-bin/DBscripts/allmetainfo.cgi?barcode=$1" || aria2c -c "http://$SERVER_1/cgi-bin/DBscripts/allmetainfo.cgi?barcode=$1"); then
       echo "*** dli-avaropa: Could not access the metadata page. Perhaps the barcode number is wrong or the network is not reachable" >&2
       rmdir "$TARGETDIR"
       exit 1
@@ -58,6 +63,7 @@ if [ -f urls.txt ] ; then
   VIEWURL="$(echo $(grep -A1 FullindexDefault allmetainfo.cgi) | cut -d '"' -f10)" # echo $() needed to join two output lines of grep into one to complete URL
   # http://www.new.dli.ernet.in/scripts/FullindexDefault.htm?path1=/rawdataupload/upload/0121/707 &first=1&last=530&barcode=5990010121705
   # http://www.new1.dli.ernet.in/scripts/FullindexDefault.htm?path1=/data9/upload/0291/884&first=1&last=217&barcode=99999990293952
+  # http://202.41.82.144/scripts/FullindexDefault.htm?path1=/data_copy/upload/0052/000&first=1&last=945&barcode=1990030051995
   SERVER="$(echo "$VIEWURL" | cut -d '/' -f-3)"
   # http://www.new.dli.ernet.in
   # http://www.new1.dli.ernet.in
@@ -73,12 +79,12 @@ if [ -f urls.txt ] ; then
   ENDPAGE="$(echo "$PATHSPEC" | cut -d '=' -f3)"
   # 530
   # 217
-  for (( p = STARTPAGE ; p <= ENDPAGE ; ++p )) ; do printf "${SERVER}${SUBDIR}/PTIFF/%08d.tif\n" $p ; done > urls.txt && echo "*** dli-avaropa: URLs printed to urls.txt; starting download" && rm allmetainfo.cgi
+  for (( p = STARTPAGE ; p <= ENDPAGE ; ++p )) ; do printf "${SERVER}${SUBDIR}/PTIFF/%08d.tif\n" $p ; done > urls.txt && echo "*** dli-avaropa: URLs printed to urls.txt; starting download" # && rm allmetainfo.cgi
 fi
 
 if aria2c -c -i urls.txt ; then
   echo "*** dli-avaropa: TIFFs downloaded; now converting to PDF"
-  rm urls.txt
+  # rm urls.txt
 else
   echo "*** dli-avaropa: aria2c exited with status $?; not proceeding with TIFF to PDF conversion" >&2
   exit $?
