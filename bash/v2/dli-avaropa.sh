@@ -20,8 +20,9 @@ function message { echo "*** dli-avaropa: $1" ; }
 function errorAndExit { echo "*** dli-avaropa ERROR: $1" >&2 ; exit 1 ; }
 function alreadyExistsContinue { message "$1 already exists; assuming this is from an earlier attempt to download" ; }
 
-[ "$#" != "2" ] && errorAndExit "USAGE: dli-avaropa <barcode> <bookname>"
+# [ "$#" != "2" ] && errorAndExit "USAGE: dli-avaropa <barcode> <bookname>"
 BOOKNAME="$2"
+echo $BOOKNAME
 
 [ -f books/"$BOOKNAME".pdf ] && errorAndExit "The PDF of this book \"$BOOKNAME\" already seems to exist"
 [ -f tifs/"$BOOKNAME".zip ] && errorAndExit "TIFs for this book \"$BOOKNAME\" already seem to exist"
