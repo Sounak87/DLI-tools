@@ -20,17 +20,9 @@ function message { echo "*** dli-avaropa: $1" ; }
 function errorAndExit { echo "*** dli-avaropa ERROR: $1" >&2 ; exit 1 ; }
 function alreadyExistsContinue { message "$1 already exists; assuming this is from an earlier attempt to download" ; }
 
-# [ "$#" != "2" ] && errorAndExit "USAGE: dli-avaropa <barcode> <bookname>"
-BOOKNAME="$2"
-echo $BOOKNAME
-
-[ -f books/"$BOOKNAME".pdf ] && errorAndExit "The PDF of this book \"$BOOKNAME\" already seems to exist"
-[ -f tifs/"$BOOKNAME".zip ] && errorAndExit "TIFs for this book \"$BOOKNAME\" already seem to exist"
-# not checking if barcode exists since the barcode alone is of no use
-
 # CHECKING AND ENTERING WORK DIRECTORY
 
-WORKDIR="~/dli/$2"
+WORKDIR="$HOME/dli/$2"
 
 if [ -d "$WORKDIR" ] ; then
 	alreadyExistsContinue "Work directory $WORKDIR"
@@ -43,6 +35,15 @@ if cd "$WORKDIR" ; then
 else
 	errorAndExit "Could not enter work directory $WORKDIR"
 fi
+
+# [ "$#" != "2" ] && errorAndExit "USAGE: dli-avaropa <barcode> <bookname>"
+BOOKNAME="$2"
+echo $BOOKNAME
+
+[ -f "$WORKDIR/$BOOKNAME".pdf ] && errorAndExit "The PDF of this book \"$BOOKNAME\" already seems to exist"
+[ -f "$WORKDIR/$BOOKNAME".zip ] && errorAndExit "TIFs for this book \"$BOOKNAME\" already seem to exist"
+
+# not checking if barcode exists since the barcode alone is of no use
 
 if [ -f barcode.txt ] ; then
 	[ "$(< barcode.txt)" = "$1" ] || errorAndExit "File barcode.txt exists but does not contain current barcode; exiting to be safe"
@@ -120,11 +121,11 @@ fi
 
 # POSTPROCESSING AND CLEANING UP
 
-if tiffcp *.tif temp.tif && tiff2pdf temp.tif -o output.pdf ; then
+if tiffcp *.tif temp.tif && tiff2pdf temp.tif -o "$BOOKNAME.pdf" ; then
 	rm temp.tif
 	message "Output PDF book created"
 	
-	if zip -q tifs.zip $(ls *.tif) ; then
+	if zip -q "$BOOKNAME.zip" $(ls *.tif) ; then
 		rm *.tif
 		message "TIFs backed up to ZIP file"
 	fi
