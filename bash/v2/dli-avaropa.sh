@@ -106,16 +106,22 @@ else
 	STARTPAGE="$(basename $(head -n1 urls.txt) ".tif")"
 	ENDPAGE="$(basename $(tail -n1 urls.txt) ".tif")"
 	SUCCESS=1
+	FAILURES=0
 	for (( p = $(( 10#$STARTPAGE )) ; p < $(( 10#$ENDPAGE )) ; ++p )) ; do
 		if [ ! -f $(printf "%08d.tif" $p) ] ; then
 			SUCCESS=0
+			FAILURES=$FAILURES+1
 			break
 		fi
 	done
 	if (( $SUCCESS )) ; then
 		rm urls.txt
 	else
-		errorAndExit "Some page(s) could not be downloaded; not proceeding with TIFF to PDF conversion"
+		message "Some page(s) could not be downloaded; but created incomplete pdf anyway."
+		if tiffcp *.tif temp.tif && tiff2pdf temp.tif -o "$BOOKNAME Missing_${FAILURES}_pages.pdf" ; then
+			message "Output PDF book created"
+		fi
+		exit
 	fi
 fi
 
