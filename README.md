@@ -5,8 +5,8 @@ Vishvas likes the Bash tool best.
 
 dli downloader (mac osx / linux)
 
-=Other tools
-==Aupasana tool
+# Other tools #
+## Aupasana tool ##
 [https://raw.githubusercontent.com/aupasana/aupasana/master/OSXScripts/dli.py] dli.py - a python script to search for Digital Library of India books by barcode (on multiple mirrors), download the tiff files from a specific server, and then convert and combine them into a single pdf.
 
 Please ensure the following tools are installed and available in the default path: wget, tiffcp and tiff2pdf
