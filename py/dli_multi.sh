@@ -17,5 +17,6 @@ do
 		echo "dli-avaropa-multi.sh ERROR: malformed input line: $barcode $bookname"
 		continue
 	fi
-	~/DLI-tools/py/dli.py "$barcode" --pdf-name="\"$bookname\""
+	pdffilename=$(echo $bookname|tr " " "_")
+	~/DLI-tools/py/dli.py "$barcode" --pdf-name="\"$pdffilename\""
 done
