@@ -59,18 +59,18 @@ else
 	if [ -f allmetainfo.cgi ] ; then
 		alreadyExistsContinue "File allmetainfo.cgi"
 	else
-		if ! aria2c -c "http://www.dli.ernet.in/cgi-bin/DBscripts/allmetainfo.cgi?barcode=$1" ; then
+		if ! aria2c -c "http://www.dli.gov.in/cgi-bin/DBscripts/allmetainfo.cgi?barcode=$1" ; then
 			cd ..
 			rmdir "$WORKDIR"
 			errorAndExit "Could not access the metadata page. Perhaps the barcode number is wrong or the network is not reachable"
 		fi
 	fi
 	VIEWURL="$(echo $(grep -A1 FullindexDefault allmetainfo.cgi) | cut -d '"' -f10)" # echo $() needed to join two output lines of grep into one to complete URL
-	# http://www.new.dli.ernet.in/scripts/FullindexDefault.htm?path1=/rawdataupload/upload/0121/707 &first=1&last=530&barcode=5990010121705
-	# http://www.new1.dli.ernet.in/scripts/FullindexDefault.htm?path1=/data9/upload/0291/884&first=1&last=217&barcode=99999990293952
+	# http://www.new.dli.gov.in/scripts/FullindexDefault.htm?path1=/rawdataupload/upload/0121/707 &first=1&last=530&barcode=5990010121705
+	# http://www.new1.dli.gov.in/scripts/FullindexDefault.htm?path1=/data9/upload/0291/884&first=1&last=217&barcode=99999990293952
 	SERVER="$(echo "$VIEWURL" | cut -d '/' -f-3)"
-	# http://www.new.dli.ernet.in
-	# http://www.new1.dli.ernet.in
+	# http://www.new.dli.gov.in
+	# http://www.new1.dli.gov.in
 	PATHSPEC="$(echo "$VIEWURL" | cut -d '=' -f2-4 | cut -d '&' -f-3)"
 	# /rawdataupload/upload/0121/707 &first=1&last=530
 	# /data9/upload/0291/884&first=1&last=217
