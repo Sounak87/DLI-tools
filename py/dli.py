@@ -4,6 +4,14 @@
 dli.py has the logic to chase the references on every single server and to find one that actually hosts the images. Once the images are downloaded, it also deals with some malformed tiff images that libtiff has trouble with. The servers are also ordered by the fastest most available ones (based on my experience).
 
 My suggestion is to use dli.py unless you have a specific need to use the other downloaders ... it has logic to deal with all the edge cases I've run into.
+
+I use the following one liner to download multiple books
+
+        cat barcodes.txt | xargs -n1 ./dli.py
+
+And I watch detailed progress by tailing the log file
+
+        tail -f dli.py.log
 """
 import sys
 
